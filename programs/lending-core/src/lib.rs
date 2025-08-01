@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
-use anchor_spl::token::{self, Token};
-use anchor_spl::token_interface::{TokenAccount, Mint};
+use anchor_spl::token::{self, Token, TokenAccount, Mint};
+
 declare_id!("oxJ2fe6yjYADjuCbyTQ3L9UnTiCYpXAAn7VhThvrbrQ");
 
 #[program]
