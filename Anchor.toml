@@ -6,11 +6,10 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-flash-loan = "CdaNq881svYxjhV9pSDCrHqNetism19UkbJo7StRHvw8"
-lending-core = "oxJ2fe6yjYADjuCbyTQ3L9UnTiCYpXAAn7VhThvrbrQ"
-lending_protocol = "4vzFVjeP43vHiusCfespA5FKmNzURSv7x9yboDZRZAkn"
-liquidation-engine = "D5kBiiVuwtDS8PwY9VgSKMT5h4Yw4eAcnpQfvkhaymaE"
-price-oracle = "4kuDEScZ1PwyMATqoHBipKWa72UXzTeuutpaGncxzyE4"
+flash_loan = "CdaNq881svYxjhV9pSDCrHqNetism19UkbJo7StRHvw8"
+lending_core = "oxJ2fe6yjYADjuCbyTQ3L9UnTiCYpXAAn7VhThvrbrQ"
+liquidation_engine = "D5kBiiVuwtDS8PwY9VgSKMT5h4Yw4eAcnpQfvkhaymaE"
+oracle_adapter = "4kuDEScZ1PwyMATqoHBipKWa72UXzTeuutpaGncxzyE4"
 
 [registry]
 url = "https://api.apr.dev"
