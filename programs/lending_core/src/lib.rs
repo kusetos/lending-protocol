@@ -10,14 +10,14 @@ pub mod events;
 pub mod math;
 pub mod errors;
 
-use instructions::*;
-
 #[program]
 pub mod lending_core {
 
     use super::*;
+    use crate::instruction::{self, InitMarket};
+
     pub fn init_market(ctx: Context<InitMarket>, args: InitMarketArgs) -> Result<()>{
-        //instructions::init_market::handler(ctx, args)
+        init_market::handler(ctx, args);
         Ok(())
     }
 }
