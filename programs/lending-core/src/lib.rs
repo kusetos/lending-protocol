@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token::{Mint, TokenAccount, Token};
 
-declare_id!("GQ3V6NVzk2VyWS5dv8df9ijawcRs4s3enwkqBE4BmoTn");
+declare_id!("So1end111111111111111111111111111111111111111");
 
 const INTEREST_RATE: u64 = 5; // 5% fixed interest rate
 const LTV_RATIO: u64 = 75; // 75% LoantoValue ratio

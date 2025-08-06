@@ -6,11 +6,11 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-lending-core = "GQ3V6NVzk2VyWS5dv8df9ijawcRs4s3enwkqBE4BmoTn"
+lending-core = "So1end111111111111111111111111111111111111111"
 
 
 [programs.devnet]
-lending-core = "GQ3V6NVzk2VyWS5dv8df9ijawcRs4s3enwkqBE4BmoTn"
+lending-core = "So1end111111111111111111111111111111111111111"
 
 [registry]
 url = "https://api.apr.dev"
