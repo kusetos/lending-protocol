@@ -1,14 +1,14 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token::{Mint, TokenAccount, Token};
 
-declare_id!("Atfj7hJjkb2WcY8zXbfLTiJWj1bnA1SWiWpphLCL9Hzj");
+declare_id!("GQ3V6NVzk2VyWS5dv8df9ijawcRs4s3enwkqBE4BmoTn");
 
 const INTEREST_RATE: u64 = 5; // 5% fixed interest rate
 const LTV_RATIO: u64 = 75; // 75% LoantoValue ratio
 
 #[program]
 pub mod lending_core {
-    use anchor_lang::solana_program::{program::invoke, system_instruction};
+    use anchor_lang::solana_program::{program::{invoke, invoke_signed}, system_instruction};
 
     use super::*;
     pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
@@ -55,7 +55,7 @@ pub mod lending_core {
 
         let max_borrow_value = collateral_value.checked_mul(LTV_RATIO).unwrap().checked_div(100).unwrap();
 
-        require!(current_debt_value + amount <= max_borrow_value, ErrorCode::LtvExceeded);
+        require!(current_debt_value.checked_add(amount).unwrap() <= max_borrow_value, ErrorCode::LtvExceeded);
 
         user_account.stablecoin_debt += amount;
         lending_pool.total_stablecoin_borrowed += amount;
@@ -71,7 +71,7 @@ pub mod lending_core {
 
         // Calculate interest due
         let interest_due = user_account.stablecoin_debt.checked_mul(INTEREST_RATE).unwrap().checked_div(100).unwrap();
-        let total_due = user_account.stablecoin_debt + interest_due;
+        let total_due = user_account.stablecoin_debt.checked_add(interest_due).unwrap();
 
         require!(amount >= total_due, ErrorCode::InsufficientRepayment);
 
@@ -79,7 +79,7 @@ pub mod lending_core {
         // For this MVP, we just update the state.
         msg!("Repaying {} stablecoins, which includes {} in interest.", total_due, interest_due);
 
-        lending_pool.total_stablecoin_borrowed -= user_account.stablecoin_debt;
+        lending_pool.total_stablecoin_borrowed = lending_pool.total_stablecoin_borrowed.checked_sub(user_account.stablecoin_debt).unwrap();
         user_account.stablecoin_debt = 0;
 
         Ok(())
@@ -90,15 +90,36 @@ pub mod lending_core {
         let lending_pool = &mut ctx.accounts.lending_pool;
 
         let sol_price_usd = 100; // Fixed price for simplicity
-        let remaining_sol = user_account.sol_deposited - amount;
+        let remaining_sol = user_account.sol_deposited.checked_sub(amount).ok_or(ErrorCode::InsufficientCollateral)?;
         let collateral_value = remaining_sol.checked_mul(sol_price_usd).unwrap();
         let max_borrow_for_remaining = collateral_value.checked_mul(LTV_RATIO).unwrap().checked_div(100).unwrap();
 
         require!(user_account.stablecoin_debt <= max_borrow_for_remaining, ErrorCode::Undercollateralized);
         require!(user_account.sol_deposited >= amount, ErrorCode::InsufficientCollateral);
         
-        **ctx.accounts.sol_vault.to_account_info().try_borrow_mut_lamports()? -= amount;
-        **ctx.accounts.owner.to_account_info().try_borrow_mut_lamports()? += amount;
+        // Use the correct PDA transfer method
+        let lending_pool_key = lending_pool.key();
+        let vault_seed = &[b"sol_vault", lending_pool_key.as_ref()];
+        let (_, vault_bump) = Pubkey::find_program_address(vault_seed, ctx.program_id);
+        let vault_seeds = &[b"sol_vault", lending_pool_key.as_ref(), &[vault_bump]];
+        let vault_signer = &[&vault_seeds[..]];
+
+        // Transfer SOL from vault to user using PDA signing
+        let ix = system_instruction::transfer(
+            &ctx.accounts.sol_vault.key(),
+            &ctx.accounts.owner.key(),
+            amount,
+        );
+        
+        invoke_signed(
+            &ix,
+            &[
+                ctx.accounts.sol_vault.to_account_info(),
+                ctx.accounts.owner.to_account_info(),
+                ctx.accounts.system_program.to_account_info(),
+            ],
+            vault_signer,
+        )?;
 
         user_account.sol_deposited -= amount;
         lending_pool.total_sol_deposited -= amount;

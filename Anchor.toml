@@ -6,11 +6,11 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-flash_loan = "CdaNq881svYxjhV9pSDCrHqNetism19UkbJo7StRHvw8"
-lending-core = "Atfj7hJjkb2WcY8zXbfLTiJWj1bnA1SWiWpphLCL9Hzj"
-lending_core = "oxJ2fe6yjYADjuCbyTQ3L9UnTiCYpXAAn7VhThvrbrQ"
-liquidation_engine = "D5kBiiVuwtDS8PwY9VgSKMT5h4Yw4eAcnpQfvkhaymaE"
-oracle_adapter = "4kuDEScZ1PwyMATqoHBipKWa72UXzTeuutpaGncxzyE4"
+lending-core = "GQ3V6NVzk2VyWS5dv8df9ijawcRs4s3enwkqBE4BmoTn"
+
+
+[programs.devnet]
+lending-core = "GQ3V6NVzk2VyWS5dv8df9ijawcRs4s3enwkqBE4BmoTn"
 
 [registry]
 url = "https://api.apr.dev"
