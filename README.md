@@ -42,13 +42,6 @@ The smart contract is implemented in Rust using Anchor. Key components include:
 - `Undercollateralized`: Triggered when withdrawal would leave the account undercollateralized.
 - `InsufficientRepayment`: Triggered when repayment is less than the total amount due.
 
-## Prerequisites
-
-- **Rust**: For building the program.
-- **Anchor**: For Solana smart contract development.
-- **Solana CLI**: For deploying and interacting with the program.
-- **Node.js**: For running tests (optional).
-
 ## Usage
 
 1. **Initialize the Lending Pool**: Call the `initialize` instruction to set up the lending pool.
